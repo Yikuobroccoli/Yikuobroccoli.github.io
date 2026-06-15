@@ -412,7 +412,8 @@ function renderMainChart() {
     const lx = margin.left + (i % 6) * 130;
     const ly = 16 + Math.floor(i / 6) * 16;
     const dash = s.dash ? 'stroke-dasharray="4 3"' : "";
-    svg.insertAdjacentHTML("beforeend", `<g class="legend"><line x1="${lx}" x2="${lx + 13}" y1="${ly - 4}" y2="${ly - 4}" stroke="${s.color}" stroke-width="2" ${dash}></line><text x="${lx + 18}" y="${ly}">${s.name}</text></g>`);
+    const seriesLabel = s.name || s.label || s.key;
+    svg.insertAdjacentHTML("beforeend", `<g class="legend"><line x1="${lx}" x2="${lx + 13}" y1="${ly - 4}" y2="${ly - 4}" stroke="${s.color}" stroke-width="2" ${dash}></line><text x="${lx + 18}" y="${ly}">${seriesLabel}</text></g>`);
   });
 
   const hoverLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
