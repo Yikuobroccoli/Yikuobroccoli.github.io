@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A股成长/价值风格极化与市场反转风险看板</title>
+  <link rel="stylesheet" href="polarization.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">A股成长/价值风格极化</p>
+      <h1>风格极化与市场反转风险看板</h1>
+      <p class="subtitle">双边风格偏离 → 主导方向 → 大盘阶段 → 风格/大盘反转路径</p>
+    </div>
+    <div class="header-meta">
+      <span id="latestDate">-</span>
+      <span id="sampleRange">-</span>
+      <a href="legacy/index.html">旧版风格百分位看板</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="status-grid" aria-label="当前状态">
+      <div class="metric-card accent">
+        <span class="metric-label">风格极化强度</span>
+        <strong id="metricIntensity">-</strong>
+        <small id="metricIntensityNote">-</small>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">偏离方向</span>
+        <strong id="metricDirection">-</strong>
+        <small id="metricDirectionNote">-</small>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">大盘阶段</span>
+        <strong id="metricMarket">-</strong>
+        <small id="metricMarketNote">-</small>
+      </div>
+      <div class="metric-card warn">
+        <span class="metric-label">当前象限</span>
+        <strong id="metricQuadrant">-</strong>
+        <small id="metricRiskNote">-</small>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="step">01 当前结构</p>
+          <h2>风格极化、方向与大盘位置</h2>
+        </div>
+        <div class="control-row">
+          <button class="seg active" data-range="all">全样本</button>
+          <button class="seg" data-range="5y">近5年</button>
+          <button class="seg" data-range="3y">近3年</button>
+          <button class="seg" data-range="1y">近1年</button>
+        </div>
+      </div>
+      <div class="detail-grid" id="currentDetail"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="step">02 主图</p>
+          <h2>指数与极化指标同图观察</h2>
+        </div>
+        <div class="control-row">
+          <button id="coreOnly" class="seg">核心三项</button>
+          <button id="selectAll" class="seg">全部指数</button>
+          <button id="clearAll" class="seg">清空指数</button>
+        </div>
+      </div>
+
+      <div class="selector-block">
+        <span>指数</span>
+        <div id="indexButtons" class="button-row"></div>
+      </div>
+      <div class="selector-block">
+        <span>指标</span>
+        <div id="indicatorButtons" class="button-row"></div>
+      </div>
+
+      <div class="chart-title">左轴：选中指数按切片起点标准化为100；右轴：选中指标百分数。鼠标悬浮可在图上方查看当日点位与指标。</div>
+      <div id="mainHoverDetail" class="hover-detail-panel">
+        <strong>悬浮详情</strong>
+        <span>把鼠标放到主图上查看日期、指数点位、极化强度和大盘阶段。</span>
+      </div>
+      <div id="mainChart" class="chart main-chart"></div>
+
+      <div class="timeline-control">
+        <div class="timeline-labels">
+          <span id="zoomStartLabel">-</span>
+          <button id="resetZoom" class="seg" type="button">重置时间轴</button>
+          <span id="zoomEndLabel">-</span>
+        </div>
+        <div class="range-pair">
+          <input id="zoomStart" type="range" min="0" value="0" />
+          <input id="zoomEnd" type="range" min="0" value="0" />
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="step">03 四象限</p>
+          <h2>同样的极化，必须结合大盘阶段解释</h2>
+        </div>
+      </div>
+      <div class="quadrant-grid" id="quadrantGrid"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="step">04 历史路径</p>
+          <h2>极化之后，是风格反转还是大盘反转</h2>
+        </div>
+        <div class="control-row">
+          <select id="horizonSelect" aria-label="观察窗口">
+            <option value="20">20日</option>
+            <option value="60">60日</option>
+            <option value="120">120日</option>
+            <option value="252">252日</option>
+          </select>
+          <select id="eventFilter" aria-label="历史事件筛选">
+            <option value="all">全部极化事件</option>
+            <option value="same_direction">同方向事件</option>
+            <option value="same_quadrant">同象限事件</option>
+          </select>
+        </div>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="chart-title">双反转路径分布</div>
+          <div id="pathChart" class="chart"></div>
+        </div>
+        <div>
+          <div class="chart-title">历史事件明细</div>
+          <div id="eventTable" class="compact-table scroll-table"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="step">05 结论提示</p>
+          <h2>极化不是买卖信号，而是不稳定结构的温度计</h2>
+        </div>
+      </div>
+      <div id="interpretation" class="interpretation"></div>
+      <p class="source-note" id="sourceNote"></p>
+    </section>
+  </main>
+
+  <script src="dashboard_data.js"></script>
+  <script src="polarization.js"></script>
+</body>
+</html>
