@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A股成长/价值风格百分位看板</title>
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">A股成长/价值风格价差</p>
+      <h1>滚动百分位状态识别看板</h1>
+      <p class="subtitle">状态识别 → 历史参照 → 路径判断 → 配置提示</p>
+    </div>
+    <div class="header-meta">
+      <span id="latestDate">-</span>
+      <span id="sampleRange">-</span>
+      <a href="../dashboard_data.js">数据包</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="status-grid" aria-label="当前状态">
+      <div class="metric-card">
+        <span class="metric-label">最新风格价差 S=ln(G/V)</span>
+        <strong id="metricS">-</strong>
+        <small id="metricState">-</small>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">5年滚动百分位</span>
+        <strong id="metricPct5">-</strong>
+        <div class="gauge"><span id="gaugePct5"></span></div>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">10年滚动百分位</span>
+        <strong id="metricPct10">-</strong>
+        <div class="gauge"><span id="gaugePct10"></span></div>
+      </div>
+      <div class="metric-card accent">
+        <span class="metric-label">当前再平衡提示</span>
+        <strong id="rebalanceTitle">-</strong>
+        <small id="rebalanceBody">-</small>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="step">01 状态识别</p>
+          <h2>当前成长/价值处在什么百分位位置</h2>
+        </div>
+        <div class="control-row">
+          <button class="seg active" data-range="all">全样本</button>
+          <button class="seg" data-range="5y">近5年</button>
+          <button class="seg" data-range="3y">近3年</button>
+          <button class="seg" data-range="1y">近1年</button>
+        </div>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="chart-title">S 与滚动阈值</div>
+          <div id="spreadChart" class="chart"></div>
+        </div>
+        <div>
+          <div class="chart-title">百分位温度</div>
+          <div id="pctChart" class="chart"></div>
+        </div>
+      </div>
+      <div class="day-lookup">
+        <label for="dateLookup">查询单日详细数值</label>
+        <input id="dateLookup" type="date" />
+        <div id="dayDetail" class="detail-grid"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="step">指数 + 百分位</p>
+          <h2>同图观察指数位置与风格温度</h2>
+        </div>
+        <div class="control-row">
+          <button id="coreOnly" class="seg">核心三项</button>
+          <button id="selectAll" class="seg">全部指数</button>
+          <button id="clearAll" class="seg">清空</button>
+        </div>
+      </div>
+      <div id="indexButtons" class="index-buttons"></div>
+      <div class="chart-options">
+        <span>百分位显示</span>
+        <div id="pctButtons" class="index-buttons compact"></div>
+      </div>
+      <div class="chart-title">选中指数走势按区间首日标准化为 100；百分位线可单独显示或隐藏</div>
+      <div id="indexChart" class="chart tall"></div>
+      <div class="timeline-control">
+        <div class="timeline-labels">
+          <span id="zoomStartLabel">-</span>
+          <button id="resetZoom" class="seg" type="button">重置时间轴</button>
+          <span id="zoomEndLabel">-</span>
+        </div>
+        <div class="range-pair">
+          <input id="zoomStart" type="range" min="0" value="0" />
+          <input id="zoomEnd" type="range" min="0" value="0" />
+        </div>
+      </div>
+      <div id="latestIndexTable" class="compact-table"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="step">02 历史参照</p>
+          <h2>历史上类似位置之后怎么走</h2>
+        </div>
+        <div class="control-row">
+          <select id="eventTypeSelect" aria-label="事件类型">
+            <option value="growth_extreme">成长极端</option>
+            <option value="value_extreme">价值极端</option>
+          </select>
+          <select id="horizonSelect" aria-label="观察窗口">
+            <option value="20">20日</option>
+            <option value="60">60日</option>
+            <option value="120">120日</option>
+            <option value="252">252日</option>
+          </select>
+        </div>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="chart-title">不同百分位强度后的平均表现</div>
+          <div id="strengthChart" class="chart"></div>
+        </div>
+        <div>
+          <div class="chart-title">相似事件列表</div>
+          <div id="eventTable" class="compact-table scroll-table"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="step">03 路径判断</p>
+          <h2>当前更像哪一种历史路径</h2>
+        </div>
+      </div>
+      <div class="two-col">
+        <div>
+          <div id="currentPath" class="path-summary"></div>
+          <div class="chart-title">历史路径占比</div>
+          <div id="pathChart" class="chart"></div>
+        </div>
+        <div>
+          <div class="chart-title">路径贡献拆解</div>
+          <div id="pathTable" class="compact-table"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="step">04 配置提示</p>
+          <h2>把百分位当作风格温度计，而不是行情预测器</h2>
+        </div>
+      </div>
+      <div class="allocation-grid">
+        <div class="allocation-item" data-zone="growth-watch">
+          <strong>成长 90%–95%</strong>
+          <span>成长偏热观察区，降低追高冲动。</span>
+        </div>
+        <div class="allocation-item" data-zone="growth-extreme">
+          <strong>成长 95%–99%</strong>
+          <span>过热预警，等待路径验证和双窗口确认。</span>
+        </div>
+        <div class="allocation-item" data-zone="growth-max">
+          <strong>成长 99%–100%</strong>
+          <span>高强度过热区，主动审视成长超配。</span>
+        </div>
+        <div class="allocation-item" data-zone="value-extreme">
+          <strong>价值 0%–5%</strong>
+          <span>成长修复赔率上升，但仍要看大盘环境。</span>
+        </div>
+      </div>
+      <div id="robustnessTable" class="compact-table"></div>
+      <p class="source-note" id="sourceNote"></p>
+    </section>
+  </main>
+
+  <script src="../dashboard_data.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
